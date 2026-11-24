@@ -2,12 +2,11 @@
    Calque : le bloc de l'icône porte l'attribut data-diamond (l'image à l'intérieur sert de secours).
    - Taille brillant calculée en code (table, couronne, rondiste, pavillon) : facettes parfaitement nettes
    - Chrome miroir (même studio noir et blanc que le logo), légère touche irisée bleutée
-   - Tourne lentement en continu, accélère au survol de la carte, pause hors écran */
+   - Tourne lentement en continu, pause hors écran */
 import * as THREE from 'three';
 
 // ---- Réglages ----
 const SPEED = 0.45;        // vitesse de rotation au repos (tours de radian / s)
-const HOVER_SPEED = 1.6;   // vitesse au survol de la carte
 const TILT = 0.3;          // inclinaison vers l'avant (on voit la table du dessus)
 const SIZE = 0.98;         // taille du diamant dans son bloc (1 = toute la largeur)
 const IRIS = 0.15; 
@@ -134,16 +133,12 @@ function init() {
   renderer.render(scene, camera);
   if (img) img.style.opacity = '0'; // l'image reste là en secours, invisible
 
-  const card = host.closest('.c_offre_card') || host;
-  let target = SPEED, speed = SPEED, visible = true, running = false, last = 0;
-  card.addEventListener('pointerenter', (e) => { if (e.pointerType !== 'touch') target = HOVER_SPEED; });
-  card.addEventListener('pointerleave', () => { target = SPEED; });
+  let visible = true, running = false, last = 0;
 
   function frame(now) {
     if (!visible || reduce) { running = false; return; }
     const dt = Math.min(0.05, (now - last) / 1000); last = now;
-    speed += (target - speed) * (1 - Math.pow(0.04, dt)); // accélère / ralentit en douceur
-    gem.rotation.y += speed * dt;
+    gem.rotation.y += SPEED * dt;
     pivot.rotation.z = Math.sin(now / 2400) * 0.04;      // très léger balancement
     renderer.render(scene, camera);
     requestAnimationFrame(frame);
